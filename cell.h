@@ -19,7 +19,7 @@ public:
 	Cell(
 		  size_t N
 		, size_t n_types
-		, const std::vector<double> &fitness
+		, const std::vector<double> fitness
 		, const std::vector<std::vector<double>> &mutations
 		, std::mt19937 &rng) 
 		: N(N), n_types(n_types), fitness(fitness), mutations(mutations), rng(rng) {
@@ -41,7 +41,7 @@ public:
 private:
 	size_t N;
 	size_t n_types;
-	const std::vector<double> &fitness;
+	const std::vector<double> fitness;
 	const std::vector<std::vector<double>> &mutations;
 	std::mt19937 &rng;
 

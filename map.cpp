@@ -23,19 +23,19 @@ Stategrid Map::get_state() {
 
 void Map::next() {
 
-	cout << "1" << endl;
+	// cout << "1" << endl;
 
 	for (auto &cell: map) {
 		cell.next();
 	}
 	
-	cout << "2" << endl;
+	// cout << "2" << endl;
 
 	for (auto &cell: map) {
 		cell.partition();
 	}
 	
-	cout << "3" << endl;
+	// cout << "3" << endl;
 
 	if (mixing_probability != 0.0) {
 		auto d = binomial_distribution<int>(pop_per_cell/4, mixing_probability);
@@ -51,11 +51,11 @@ void Map::next() {
 		}
 	}
 	
-	cout << "4" << endl;
+	// cout << "4" << endl;
 
 	for (auto &cell: map) {
 		cell.recombine();
 	}
 	
-	cout << "5\n";
+	// cout << "5\n";
 }

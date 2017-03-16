@@ -60,17 +60,17 @@ int main(int argc, char **argv) {
 	int i = 0;
 	while (run) {
 
-		cout << "begin run" << endl;
+		// cout << "begin run" << endl;
 
 		m.next();
 
-		cout << "next done" << endl;
+		// cout << "next done" << endl;
 
 		if (i % frameskip == 0) {
 			auto s = m.get_state();
 			md.draw(s);
 
-			cout << "draw done" << endl;
+			// cout << "draw done" << endl;
 			// cout << "iteration " << i << endl;
 			// i = 0;
 		}
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 		}
 		++i;
 
-		cout << "events done" << endl;
+		// cout << "events done" << endl;
 	}
 
 	md.exit();

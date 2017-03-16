@@ -35,6 +35,7 @@ void Cell::next() {
 
 
 // This function is probably super slow. fix sometime. maybe.
+// Fixed it, maybe
 void Cell::partition() {
 	// uniform_int_distribution<int> cardinal(0, 3);
 	// part = std::vector<std::vector<size_t>> (4, std::vector<size_t> (n_types, 0));
@@ -47,22 +48,24 @@ void Cell::partition() {
 
 	part = std::vector<std::vector<size_t>> (4, std::vector<size_t> (n_types, 0));
 
-	cout << "2-1" << endl;
+	// cout << "2-1" << endl;
 
 	for (size_t i = 0; i < n_types; ++i) {
 
-		cout << "2-" << i+2 << endl;
+		// cout << "2-" << i+2 << endl;
 
 		multinomial_distribution<int> d(state[i], vector<double>(4, 1.5));
 		auto t = d(rng);
 
-		cout << state[i] << ' ' << t[0] << ' ' << t[1] << ' ' << t[2] << ' ' << t[3] << ' ' << endl;
+		// cout << state[i] << ' ' << t[0] << ' ' << t[1] << ' ' << t[2] << ' ' << t[3] << ' ' << endl;
 
 		for (int j = 0; j < 4; ++j) {
-			cout << i << ' ' << j << endl;
+			// cout << i << ' ' << j << endl;
 			part[j][i] = t[j];
 		}
 	}
+
+	// cout << "2-5" << endl;
 }
 
 
