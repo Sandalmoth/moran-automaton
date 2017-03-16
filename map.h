@@ -5,6 +5,7 @@
 #include <random>
 #include <vector>
 #include <cassert>
+#include <iostream>
 
 #include "cell.h"
 
@@ -21,7 +22,11 @@ using Stategrid = std::vector<std::vector<std::vector<size_t> > >;
 
 class Map {
 public:
-	Map(size_t x, size_t y) : x_dim(x), y_dim(y) {
+	Map(size_t x, size_t y, std::vector<double> fitness, double mixing_probability) 
+		: x_dim(x)
+		, y_dim(y)
+		, fitness(fitness)
+		, mixing_probability(mixing_probability) {
 		assert(x <= MAX_WIDTH && x > 0);
 		assert(y <= MAX_HEIGHT && y > 0);
 
@@ -31,6 +36,10 @@ public:
 
 		std::random_device device;
 		rng.seed(device());
+
+
+		// std::cout << "\tmixing probability: " << mixing_probability << std::endl;
+		// std::cout << "\tfitness: " << fitness[0] << ' ' << fitness[1] << ' ' << fitness[2] << std::endl;
 	}
 
 	Stategrid get_state();
@@ -44,10 +53,11 @@ private:
 	std::vector<Cell> map;
 
 	std::mt19937 rng;
-	std::vector<double> fitness{1, 1, 1};
+	std::vector<double> fitness;
 	std::vector<std::vector<double>> mutations{{200, 10, 10}, {10, 200, 10}, {10, 10, 200}};
 
-	size_t pop_per_cell = 3*4*100;
+	size_t pop_per_cell = 3*4*10;
+	double mixing_probability;
 };
 
 #endif

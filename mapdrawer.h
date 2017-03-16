@@ -13,7 +13,7 @@ const size_t MAX_WDW_HEIGHT = 2048;
 
 class MapDrawer {
 public:
-	MapDrawer(size_t x, size_t y) : width(x), height(y) {
+	MapDrawer(size_t x, size_t y) : width(x*2+9), height(y) {
 		assert(x <= MAX_WDW_WIDTH && x > 0);
 		assert(y <= MAX_WDW_HEIGHT && y > 0);
 	}

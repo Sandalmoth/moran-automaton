@@ -11,76 +11,67 @@
 using namespace std;
 
 
-const char * VERSION {"0.0.1"};
+const char * VERSION {"1.0.0"};
 
 
 struct Arguments {
+	double mix;
+	vector<double> fitness;
+	int dim;
 };
 
 
-int main() {
-	// Arguments a;
+int main(int argc, char **argv) {
+	Arguments a;
 	try {
+
 		TCLAP::CmdLine cmd("Moran-automaton", ' ', VERSION);
-		// TCLAP::ValueArg<string> a_input("i", "input", "Path to input file", true, "__invalid__", "~/somewhere/filename.hdf5", cmd);
-		// TCLAP::ValueArg<string> a_output("o", "output", "Path for output file (overwrites existing)", false, "./out.hdf5", "~/somewhere/filename.hdf5", cmd);
-		// TCLAP::ValueArg<string> a_ssave("s", "save", "Path for probability file (overwrites existing)", false, "./s.hdf5", "~/somewhere/filename.hdf5", cmd);
-		// TCLAP::ValueArg<string> a_sload("l", "load", "Path for probability file to be loaded", false, "__invalid__", "~/somewhere/filename.hdf5", cmd);
-		// TCLAP::ValueArg<unsigned long> a_manual_seed("e", "rng-seed", "Provide the seed manually", false, 0, "integer", cmd);
-  //       TCLAP::SwitchArg a_useseed("r", "use-input-seed", "Use rng seed in input file rather than std::random_device", cmd, false);
-		// TCLAP::SwitchArg a_outname_seed("m", "outname-seed", "Adds the rng-seed used to the output filename", cmd, false);
+		TCLAP::ValueArg<double> a_mix("m", "mixing-probability", "Chance that a member goes from one cell to another", false, 0.001, "positive floating point", cmd);
+		TCLAP::ValueArg<double> a_g("g", "green-fitness", "Fitness value for green cells", false, 1, "positive floating point", cmd);
+		TCLAP::ValueArg<double> a_r("r", "red-fitness", "Fitness value for red cells", false, 1, "positive floating point", cmd);
+		TCLAP::ValueArg<double> a_b("b", "blue-fitness", "Fitness value for blue cells", false, 1, "positive floating point", cmd);
+		TCLAP::ValueArg<int> a_dim("d", "dimension", "Size of cell grid", false, 32, "positive integer", cmd);
+		
+		cmd.parse(argc, argv);
 
-		// cmd.parse(argc, argv);
-
-		// // Place in convenient container
-		// a.input_filename = a_input.getValue();
-		// a.output_filename = a_output.getValue();
-
-		// if (a_ssave.isSet() && a_sload.isSet()) throw TCLAP::ArgException("Simultaneous saving and loading a probability file is disallowed");
-		// if (a_ssave.isSet()) {
-		// 	a.s_option = "save";
-		// 	a.s_filename = a_ssave.getValue();
-		// } else if (a_sload.isSet()) {
-		// 	a.s_option = "load";
-		// 	a.s_filename = a_sload.getValue();
-		// } else {
-		// 	a.s_option = "generate";
-		// }
-
-  //       if (a_manual_seed.isSet()) {
-  //           a.manual_seed = a_manual_seed.getValue();
-  //           a.use_manual_seed = true;
-  //       }
-
-		// a.use_input_seed = a_useseed.getValue();
-		// a.outname_seed = a_outname_seed.getValue();
+		a.mix = a_mix.getValue();
+		a.fitness = vector<double> {a_r.getValue(), a_g.getValue(), a_b.getValue()};
+		a.dim = a_dim.getValue();
 
 	} catch (TCLAP::ArgException &e) {
 		cerr << "TCLAP Error: " << e.error() << endl << "\targ: " << e.argId() << endl;
 		return 1;
 	}
 
-	int z = 16;
+	cout << "Parsed arguments:" << endl;
+	cout << "\tmixing probability: " << a.mix << endl;
+	cout << "\tfitness: " << a.fitness[0] << ' ' << a.fitness[1] << ' ' << a.fitness[2] << endl;
 
-	Map m(z, z);
+	int z = a.dim;
+
+	Map m(z, z, a.fitness, a.mix);
 	MapDrawer md(9*z + 1, 9*z + 1);
 	md.init();
 
 	SDL_Event e;
 
-	int frameskip = 10;
+	int frameskip = 1;
 	bool run = true;
 	int i = 0;
 	while (run) {
 
+		cout << "begin run" << endl;
+
 		m.next();
 
-		// cout << "NEXT DONE" << endl;
+		cout << "next done" << endl;
 
 		if (i % frameskip == 0) {
 			auto s = m.get_state();
 			md.draw(s);
-			cout << "iteration " << i << endl;
+
+			cout << "draw done" << endl;
+			// cout << "iteration " << i << endl;
 			// i = 0;
 		}
 
@@ -90,6 +81,8 @@ int main() {
 			}
 		}
 		++i;
+
+		cout << "events done" << endl;
 	}
 
 	md.exit();

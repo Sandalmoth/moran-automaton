@@ -19,7 +19,7 @@ void Cell::next() {
 	// Reproduce a member based on fitness
 	vector<double> plist;
 	for (size_t i = 0; i < fitness.size(); ++i) {
-		plist.push_back(fitness[i] * state[i]);
+		plist.push_back(fitness[i] * state[i] * state[i]);
 	}
 	// cout << "GOT PLIST" << endl;
 	discrete_distribution<int> d(plist.begin(), plist.end());
@@ -46,10 +46,20 @@ void Cell::partition() {
 	// }
 
 	part = std::vector<std::vector<size_t>> (4, std::vector<size_t> (n_types, 0));
+
+	cout << "2-1" << endl;
+
 	for (size_t i = 0; i < n_types; ++i) {
+
+		cout << "2-" << i+2 << endl;
+
 		multinomial_distribution<int> d(state[i], vector<double>(4, 1.5));
 		auto t = d(rng);
+
+		cout << state[i] << ' ' << t[0] << ' ' << t[1] << ' ' << t[2] << ' ' << t[3] << ' ' << endl;
+
 		for (int j = 0; j < 4; ++j) {
+			cout << i << ' ' << j << endl;
 			part[j][i] = t[j];
 		}
 	}
@@ -90,7 +100,7 @@ void mix(Cell &a, Cell &b, GEOGRAPHY a_is_to_b, int mix_count) {
 	}
 
 	// Mix
-	while (mix_count >=0) {
+	while (mix_count >0) {
 		int a_choice = discrete_distribution<int>(a.part[a_c].begin(), a.part[a_c].end())(a.rng);
 		int b_choice = discrete_distribution<int>(b.part[b_c].begin(), b.part[b_c].end())(b.rng);
 

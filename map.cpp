@@ -23,37 +23,39 @@ Stategrid Map::get_state() {
 
 void Map::next() {
 
-	// cout << "1" << endl;
+	cout << "1" << endl;
 
 	for (auto &cell: map) {
 		cell.next();
 	}
 	
-	// cout << "2" << endl;
+	cout << "2" << endl;
 
 	for (auto &cell: map) {
 		cell.partition();
 	}
 	
-	// cout << "3" << endl;
+	cout << "3" << endl;
 
-	auto d = binomial_distribution<int>(pop_per_cell/4, 0.01);
+	if (mixing_probability != 0.0) {
+		auto d = binomial_distribution<int>(pop_per_cell/4, mixing_probability);
 
-	for (int x = 0; (size_t)x < x_dim; ++x) {
-		for (int y = 0; (size_t)y < y_dim; ++y) {
-			int y_below = (y + 1) % y_dim;
-			int x_right = (x + 1) % x_dim;
+		for (int x = 0; (size_t)x < x_dim; ++x) {
+			for (int y = 0; (size_t)y < y_dim; ++y) {
+				int y_below = (y + 1) % y_dim;
+				int x_right = (x + 1) % x_dim;
 
-			mix(map[x + y*x_dim], map[x + y_below*x_dim], GEOGRAPHY::N, d(rng));
-			mix(map[x + y*x_dim], map[x_right + y*x_dim], GEOGRAPHY::W, d(rng));
-		}			
+				mix(map[x + y*x_dim], map[x + y_below*x_dim], GEOGRAPHY::N, d(rng));
+				mix(map[x + y*x_dim], map[x_right + y*x_dim], GEOGRAPHY::W, d(rng));
+			}			
+		}
 	}
 	
-	// cout << "4" << endl;
+	cout << "4" << endl;
 
 	for (auto &cell: map) {
 		cell.recombine();
 	}
 	
-	// cout << "5\n";
+	cout << "5\n";
 }

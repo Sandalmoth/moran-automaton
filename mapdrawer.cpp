@@ -28,6 +28,11 @@ void MapDrawer::exit() {
 }
 
 
+double getH(double a, double b, double c) {
+	return -log2(a+0.0001)*a-log2(b+0.0001)*b-log2(c+0.0001)*c;
+}
+
+
 void MapDrawer::draw(Stategrid s) {
 	// surf = SDL_GetWindowSurface(window);
 	// SDL_FillRect(surf, nullptr, SDL_MapRGB(surf->format, 0, 0, 0));
@@ -39,12 +44,18 @@ void MapDrawer::draw(Stategrid s) {
 	for (int x = 0; (size_t)x < s.size(); ++x) {
 		for (int y = 0; (size_t)y < s[x].size(); ++y) {
 			SDL_Rect rx = {1 + x*9, 1 + y*9, 8, 8};
-			double r = s[x][y][0] / 1200.0 * 256.0;
-			double g = s[x][y][1] / 1200.0 * 256.0;
-			double b = s[x][y][2] / 1200.0 * 256.0;
-			// cout << r << '\t' << g << '\t' << b << endl;
+			double r = s[x][y][0] / 120.0 * 255.0;
+			double g = s[x][y][1] / 120.0 * 255.0;
+			double b = s[x][y][2] / 120.0 * 255.0;
 			SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
 			SDL_RenderFillRect(renderer, &rx);
+
+			rx = {1 + x*9 + ((int)width-9) / 2 + 9, 1 + y*9, 8, 8};
+			double h = getH(r/255.0, g/255.0, b/255.0);
+			// cout << h << endl;
+			SDL_SetRenderDrawColor(renderer, h*128.0, h*128.0, h*128.0, 0xFF);
+			SDL_RenderFillRect(renderer, &rx);
+
 		}
 	}
 
