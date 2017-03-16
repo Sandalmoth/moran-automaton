@@ -2,8 +2,16 @@
 
 #include <iostream>
 
+#include "multinomial.h"
+
 
 using namespace std;
+
+
+
+std::vector<size_t> Cell::get_state() {
+	return state;
+}
 
 
 void Cell::next() {
@@ -19,7 +27,7 @@ void Cell::next() {
 	// cout << "REPR " << repr_t << endl;
 	++state[repr_t];
 	// Kill a random member
-	uniform_int_distribution<int> d2(0, n_types-1);
+	discrete_distribution<int> d2(state.begin(), state.end());
 	auto death_t = d2(rng);
 	// cout << "DEATH " << death_t << endl;
 	--state[death_t];
@@ -28,11 +36,21 @@ void Cell::next() {
 
 // This function is probably super slow. fix sometime. maybe.
 void Cell::partition() {
-	uniform_int_distribution<int> cardinal(0, 3);
+	// uniform_int_distribution<int> cardinal(0, 3);
+	// part = std::vector<std::vector<size_t>> (4, std::vector<size_t> (n_types, 0));
+	// for (size_t i = 0; i < n_types; ++i) {
+	// 	// cout << state[0] << '\t' << state[1] << '\t' << state[2] << endl;
+	// 	for (size_t j = 0; j < state[i]; ++j) {
+	// 		++part[cardinal(rng)][i];
+	// 	}
+	// }
+
 	part = std::vector<std::vector<size_t>> (4, std::vector<size_t> (n_types, 0));
 	for (size_t i = 0; i < n_types; ++i) {
-		for (size_t j = 0; j < state[i]; ++j) {
-			++part[cardinal(rng)][i];
+		multinomial_distribution<int> d(state[i], vector<double>(4, 1.5));
+		auto t = d(rng);
+		for (int j = 0; j < 4; ++j) {
+			part[j][i] = t[j];
 		}
 	}
 }
@@ -73,8 +91,12 @@ void mix(Cell &a, Cell &b, GEOGRAPHY a_is_to_b, int mix_count) {
 
 	// Mix
 	while (mix_count >=0) {
-		a_choice = discrete_distribution<int>(a.part[a_c].begin(), a.part[a_c].end())(a.rng);
-		b_choice = discrete_distribution<int>(b.part[b_c].begin(), b.part[b_c].end())(b.rng);
+		int a_choice = discrete_distribution<int>(a.part[a_c].begin(), a.part[a_c].end())(a.rng);
+		int b_choice = discrete_distribution<int>(b.part[b_c].begin(), b.part[b_c].end())(b.rng);
+
+		if (a.part[a_c][a_choice] == 0) continue;
+		if (b.part[b_c][b_choice] == 0) continue;
+
 		++a.part[a_c][b_choice];
 		--a.part[a_c][a_choice];
 		++b.part[b_c][a_choice];

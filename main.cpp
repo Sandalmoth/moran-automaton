@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <tclap/CmdLine.h>
+#include "SDL.h"
 
 #include "map.h"
 #include "mapdrawer.h"
@@ -59,10 +60,37 @@ int main() {
 		return 1;
 	}
 
-	Map m(16, 16);
-	MapDrawer md(512, 512);
-	md.update(m.get_state());
-	for (int i = 0; i < 100; ++i) {
+	int z = 16;
+
+	Map m(z, z);
+	MapDrawer md(9*z + 1, 9*z + 1);
+	md.init();
+
+	SDL_Event e;
+
+	int frameskip = 10;
+	bool run = true;
+	int i = 0;
+	while (run) {
+
 		m.next();
+
+		// cout << "NEXT DONE" << endl;
+
+		if (i % frameskip == 0) {
+			auto s = m.get_state();
+			md.draw(s);
+			cout << "iteration " << i << endl;
+			// i = 0;
+		}
+
+		while(SDL_PollEvent(&e) != 0) {
+			if(e.type == SDL_QUIT) { 
+				run = false;
+			}
+		}
+		++i;
 	}
+
+	md.exit();
 }

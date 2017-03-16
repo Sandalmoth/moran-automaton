@@ -2,11 +2,13 @@
 #define __MAPDRAWER_H__
 
 
+#include "SDL.h"
+
 #include "map.h"
 
 
-const size_t MAX_WDW_WIDTH  = 512;
-const size_t MAX_WDW_HEIGHT = 512;
+const size_t MAX_WDW_WIDTH  = 2048;
+const size_t MAX_WDW_HEIGHT = 2048;
 
 
 class MapDrawer {
@@ -16,10 +18,18 @@ public:
 		assert(y <= MAX_WDW_HEIGHT && y > 0);
 	}
 
-	void update(Stategrid);
+	void init();
+	void exit();
+
+	void draw(Stategrid);
+	void print(Stategrid);
 private:
 	size_t width;
 	size_t height;
+
+	SDL_Window* window = nullptr;
+	SDL_Surface *surf = nullptr;
+	SDL_Renderer* renderer = nullptr;
 };
 
 

@@ -28,13 +28,15 @@ public:
 		part = std::vector<std::vector<size_t>> (4, std::vector<size_t> (n_types, 0));
 	}
 
+	std::vector<size_t> get_state();
+
 	void next();
 
 	void partition();
 
 	void recombine();
 
-	friend void mix(Cell &, Cell &, GEOGRAPHY);
+	friend void mix(Cell &, Cell &, GEOGRAPHY, int);
 
 private:
 	size_t N;

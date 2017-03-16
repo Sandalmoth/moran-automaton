@@ -7,6 +7,12 @@ add_executable(moran-automaton main.cpp map.cpp cell.cpp mapdrawer.cpp)
 
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
+find_package (SDL2)
+if (SDL2_FOUND)
+  include_directories(${SDL2_INCLUDE_DIRS})
+  target_link_libraries (moran-automaton ${SDL2_LIBRARIES} -lSDL2)
+endif (SDL2_FOUND)
+
 if(MSVC)
   # Force to always compile with W4
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")

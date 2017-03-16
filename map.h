@@ -26,8 +26,11 @@ public:
 		assert(y <= MAX_HEIGHT && y > 0);
 
 		for (size_t i = 0; i < x*y; ++i) {
-			map.emplace_back(Cell(255*3, 3, fitness, mutations, rng));
+			map.emplace_back(Cell(pop_per_cell, 3, fitness, mutations, rng));
 		}
+
+		std::random_device device;
+		rng.seed(device());
 	}
 
 	Stategrid get_state();
@@ -41,8 +44,10 @@ private:
 	std::vector<Cell> map;
 
 	std::mt19937 rng;
-	std::vector<double> fitness{1, 2, 3};
-	std::vector<std::vector<double>> mutations{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+	std::vector<double> fitness{1, 1, 1};
+	std::vector<std::vector<double>> mutations{{200, 10, 10}, {10, 200, 10}, {10, 10, 200}};
+
+	size_t pop_per_cell = 3*4*100;
 };
 
 #endif
